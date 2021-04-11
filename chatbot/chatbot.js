@@ -1,6 +1,6 @@
 'use strict'
 const dialogFlow = require('@google-cloud/dialogflow');
-const config = require('../config/keys');
+const config = require('../config/instances');
 const {struct} = require('pb-util');
 
 const projectID = config.googleProjectID;
