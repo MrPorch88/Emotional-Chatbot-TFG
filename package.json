@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "node index.js",
-    "inlocal": "nodemon index.js"
+    "inlocal": "nodemon index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run inlocal\" \"npm run client\""
   },
   "author": "Jorge Moreno Velez",
   "license": "ISC",
@@ -19,6 +21,7 @@
     "pb-util": "^0.1.3"
   },
   "devDependencies": {
+    "concurrently": "^6.0.1",
     "nodemon": "^2.0.7"
   }
 }
