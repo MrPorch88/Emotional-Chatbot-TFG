@@ -1,3 +1,7 @@
+/*
+Esta clase se encarga del renderizado de los cuadros de texto recibiendo los datos
+desde la clase Chatbot.
+*/
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -18,6 +22,7 @@ const useStyles = makeStyles({
   chatSection: {
     width: '100%',
     height: '10vh',
+    marginBottom: '1vh'
   },
   headBG: {
       backgroundColor: '#e0e0e0'
