@@ -80,10 +80,11 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     render(){
         return(
             <Container maxWidth="sm">
-                <Typography component="div" style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
+                <Typography component="div" style={{ minHeight: 150, maxHeight: 500, width: '100%', overflow: 'auto'}}>
                     {this.renderMessages(this.state.messages)}
                     <Divider />
-                    <Grid container style={{padding: '20px'}}>
+                </Typography>
+                <Grid container style={{padding: '20px'}}>
                         <Grid item xs={11}>
                             <TextField id="outlined-basic-email" label="Write a Message" fullWidth onKeyPress={this._handleInputKeyPress}/>
                         </Grid>
@@ -91,7 +92,6 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
                             <Fab color="primary" aria-label="add"><SendIcon /></Fab>
                         </Grid>
                     </Grid>
-                </Typography>
             </Container>
         )
     }

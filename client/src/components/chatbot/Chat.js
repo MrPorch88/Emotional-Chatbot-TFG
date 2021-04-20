@@ -21,7 +21,7 @@ import SendIcon from '@material-ui/icons/Send';
 const useStyles = makeStyles({
   chatSection: {
     width: '100%',
-    height: '10vh',
+    height: '12vh',
     marginBottom: '1vh'
   },
   headBG: {
@@ -31,8 +31,7 @@ const useStyles = makeStyles({
       borderRight: '1px solid #e0e0e0'
   },
   messageArea: {
-    height: '50vh',
-    overflowY: 'auto'
+    height: '12vh'
   }
 });
 
@@ -74,15 +73,6 @@ const Chat = (props) => {
                         }
                     </ListItem>
                 </List>
-                {/* <Divider />
-                <Grid container style={{padding: '20px'}}>
-                    <Grid item xs={11}>
-                        <TextField id="outlined-basic-email" label="Write a Message" fullWidth />
-                    </Grid>
-                    <Grid xs={1} align="right">
-                        <Fab color="primary" aria-label="add"><SendIcon /></Fab>
-                    </Grid>
-                </Grid> */}
             </Grid>
         </Grid>
       </div>
