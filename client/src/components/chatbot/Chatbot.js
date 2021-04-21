@@ -18,7 +18,8 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         super(props);
         this._handleInputKeyPress = this._handleInputKeyPress.bind(this);
         this.state = {
-            messages: []
+            messages: [],
+            buttonText: ''
         }
     }
 
@@ -74,7 +75,13 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         if (e.key==='Enter'){
             this.df_text_query(e.target.value);
             e.target.value='';
+            this.setState({buttonText: ''});
         }
+    }
+
+    buttonClick = async () => { // Envio del texto del campo TextField al endpoint de la API al hacer click en el boton haciendo uso de estados
+        this.df_text_query(this.state.buttonText);
+        this.setState({buttonText: ''});
     }
 
     render(){
@@ -86,10 +93,10 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
                 </Typography>
                 <Grid container style={{padding: '20px'}}>
                         <Grid item xs={11}>
-                            <TextField id="outlined-basic-email" label="Write a Message" fullWidth onKeyPress={this._handleInputKeyPress}/>
+                            <TextField id="outlined-basic-email" label="Write a Message" fullWidth autoFocus value={this.state.buttonText} onChange={ e => this.setState({buttonText: e.target.value})} onKeyPress={this._handleInputKeyPress}/>
                         </Grid>
-                        <Grid xs={1} align="right">
-                            <Fab color="primary" aria-label="add"><SendIcon /></Fab>
+                        <Grid item xs={1} align="right">
+                            <Fab color="primary" aria-label="add" onClick={() => this.buttonClick()}><SendIcon /></Fab>
                         </Grid>
                     </Grid>
             </Container>
