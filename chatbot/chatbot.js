@@ -12,11 +12,12 @@ const credentials = {
 };
 
 const sessionClient = new dialogFlow.SessionsClient({projectID, credentials});
-const sessionPath = sessionClient.projectAgentSessionPath(projectID, sessionID);
+//const sessionPath = sessionClient.projectAgentSessionPath(projectID, sessionID);
 
 module.exports = {
-    textQuery: async function(text, parameters = {}) {
+    textQuery: async function(text, userID, parameters = {}) {
         try {
+            let sessionPath = sessionClient.projectAgentSessionPath(projectID, sessionID + userID);
             let self = module.exports;
             const request = {
                 session: sessionPath,
@@ -55,8 +56,9 @@ module.exports = {
         }
     },
 
-    eventQuery: async function(event, parameters = {}) {
+    eventQuery: async function(event, userID, parameters = {}) {
         try {
+            let sessionPath = sessionClient.projectAgentSessionPath(projectID, sessionID + userID);
             let self = module.exports;
             const request = {
                 session: sessionPath,

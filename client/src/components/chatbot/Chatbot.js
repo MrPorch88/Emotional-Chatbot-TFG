@@ -12,6 +12,11 @@ import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
 import Divider from '@material-ui/core/Divider';
+import Cookies from 'universal-cookie';
+import { v4 as uuid } from 'uuid';
+
+
+const cookies = new Cookies();
 
 class Chatbot extends Component { // Usamos una clase para poder tener estados y poder mostrar mensajes
     constructor(props){
@@ -20,21 +25,25 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         this.state = {
             messages: [],
             buttonText: ''
+        };
+        
+        if (cookies.get('userID') === undefined){
+            cookies.set('userID', uuid(), { path: '/' });
         }
     }
 
-    async df_text_query(text) {
+    async df_text_query(queryText) {
         let speak = { // Objeto con info de los mensajes
             speaks: 'me',
             msg: {
                 text: {
-                    text: text
+                    text: queryText
                 }
             }
         };
         this.setState({messages: [...this.state.messages, speak]})  // Agregamos los mensajes anteriores con los nuevos
 
-        const res = await axios.post('/api/df_text_query', {text});
+        const res = await axios.post('/api/df_text_query', {text: queryText, userID: cookies.get('userID')});
 
         for (let msg of res.data.fulfillmentMessages) {
             speak = {
@@ -45,9 +54,8 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         }
     }
 
-    async df_event_query(event) {
-        const res = await axios.post('/api/df_event_query', {event});
-
+    async df_event_query(eventName) {
+        const res = await axios.post('/api/df_event_query', {event: eventName, userID: cookies.get('userID')});
         for (let msg of res.data.fulfillmentMessages) {
             let speak = {
                 speaks: 'bot',
