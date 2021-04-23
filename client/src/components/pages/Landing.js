@@ -9,13 +9,13 @@ import Chatbot from '../chatbot/Chatbot';
 function Landing() {
     return(
         <div className="Landing" style={{ textAlign: 'center'}}  alignitems="center">
-            <img src={Logo} alt="logo" height='200' />
+            <img src={Logo} alt="logo" height='200'/>
             <div>
                 <Chatbot/>
             </div>
-            <div>
+            <footer className="footer">
                 <Footer/>
-            </div>
+            </footer>
         </div>
     );
 }

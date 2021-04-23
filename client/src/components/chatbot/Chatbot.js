@@ -89,7 +89,7 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
             <Container maxWidth="sm">
                 <Typography component="div" style={{ minHeight: 150, maxHeight: 500, width: '100%', overflow: 'auto'}}>
                     {this.renderMessages(this.state.messages)}
-                    <Divider />
+                    <Divider/>
                 </Typography>
                 <Grid container style={{padding: '20px'}}>
                         <Grid item xs={11}>
