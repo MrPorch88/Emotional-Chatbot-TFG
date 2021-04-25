@@ -35,7 +35,6 @@ module.exports = {
                     }
                 }
             };
-            
             // Send request and log result
             // const responses = await sessionClient.detectIntent(request);
             // console.log('Detected intent');

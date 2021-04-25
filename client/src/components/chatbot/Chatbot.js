@@ -14,7 +14,13 @@ import SendIcon from '@material-ui/icons/Send';
 import Divider from '@material-ui/core/Divider';
 import Cookies from 'universal-cookie';
 import { v4 as uuid } from 'uuid';
+import CardTemp from './CardTemp';
 
+import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+
+import ListItemText from '@material-ui/core/ListItemText';
 
 const cookies = new Cookies();
 
@@ -46,6 +52,7 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         const res = await axios.post('/api/df_text_query', {text: queryText, userID: cookies.get('userID')});
 
         for (let msg of res.data.fulfillmentMessages) {
+            console.log(JSON.stringify(msg));
             speak = {
                 speaks: 'bot',
                 msg: msg
@@ -69,10 +76,48 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         this.df_event_query('Howdy');
     }
 
+
+    renderCards(cards) {
+        return cards.map((card, i) => <CardTemp key={i} payload={card.structValue}/>);
+    }
+
+    renderOneMessage(message, i){ // Metodo para unificar y limpiar codigo que devuelve un unico mensaje
+        if (message.msg && message.msg.text && message.msg.text.text){
+            return <Message key={i} speaks={message.speaks} text={message.msg.text.text} />
+        } else if (message.msg && message.msg.payload && message.msg.payload.fields && message.msg.payload.fields.cards) { // Comprobamos si se trata de una tarjeta
+            return <div key={i}>
+                    <Grid container component={Paper}>
+                        <Grid item xs={12}>
+                            <List>
+                                <ListItem key="1">
+                                        <Grid container>
+                                            <Grid item xs={12}>
+                                                <ListItemText align="left" secondary={message.speaks}></ListItemText>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <ListItemText align="center">
+                                                {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                                            </ListItemText>
+                                                
+                                                {/* <div style={{ overflow: 'auto', overflowY: 'scroll'}}>
+                                                    <div style={{ height: 300, width:message.msg.payload.fields.cards.listValue.values.length * 270}}>
+                                                        {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                                                    </div>
+                                                </div> */}
+                                            </Grid>
+                                        </Grid>
+                                </ListItem>
+                            </List>
+                        </Grid>
+                </Grid>
+            </div>
+        }
+    }
+
     renderMessages(stateMessages){
         if (stateMessages){
             return stateMessages.map((message, i) => {
-                return <Message key={i} speaks={message.speaks} text={message.msg.text.text} />
+                return this.renderOneMessage(message, i);
             });
         } else {
             return null;
