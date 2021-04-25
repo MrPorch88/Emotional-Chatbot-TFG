@@ -66,7 +66,7 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     }
 
     componentDidMount(){ // Metodo para renderizar el mensaje inicial al abrir la página
-        this.df_event_query('Hello');
+        this.df_event_query('Howdy');
     }
 
     renderMessages(stateMessages){
