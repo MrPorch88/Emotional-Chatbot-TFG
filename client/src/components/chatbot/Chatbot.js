@@ -22,6 +22,10 @@ import ListItem from '@material-ui/core/ListItem';
 
 import ListItemText from '@material-ui/core/ListItemText';
 
+import ReactPlayer from 'react-player';
+
+import AutoScroll from '@brianmcallister/react-auto-scroll';
+
 const cookies = new Cookies();
 
 class Chatbot extends Component { // Usamos una clase para poder tener estados y poder mostrar mensajes
@@ -30,7 +34,8 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
         this._handleInputKeyPress = this._handleInputKeyPress.bind(this);
         this.state = {
             messages: [],
-            buttonText: ''
+            buttonText: '',
+            msgSentiment: ''
         };
         
         if (cookies.get('userID') === undefined){
@@ -53,6 +58,34 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
 
         for (let msg of res.data.fulfillmentMessages) {
             console.log(JSON.stringify(msg));
+            this.setState({msgSentiment: res.data.sentimentAnalysisResult.queryTextSentiment.score});
+            console.log(this.state.msgSentiment);
+            
+            if (this.state.msgSentiment >= 0.70){
+                console.log("Resultado positivo");
+                // speak = {
+                //     speaks: 'bot',
+                //     msg: <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' />
+                // }
+                // this.setState({messages: [...this.state.messages, speak]});
+                // break;
+            } else if (this.state.msgSentiment <= -0.70){
+                console.log("Resultado negativo");
+                
+                // switch(this.state.msgSentiment){
+                //     case (this.state.msgSentiment <= -0.70):
+                //         this.df_event_query('FILLHELPFUL');
+                //         break;
+                //     default:
+                //         //this.df_event_query('SADREQ');
+                // }
+                // break;
+                this.df_event_query('FILLHELPFUL');
+                break;
+            } else if (this.state.msgSentiment <= -0.60){
+                this.df_event_query('SADREQ');
+                break;
+            }
             speak = {
                 speaks: 'bot',
                 msg: msg
@@ -73,7 +106,7 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     }
 
     componentDidMount(){ // Metodo para renderizar el mensaje inicial al abrir la página
-        this.df_event_query('Howdy');
+        this.df_event_query('Welcome');
     }
 
 
@@ -140,10 +173,12 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     render(){
         return(
             <Container maxWidth="sm">
-                <Typography component="div" style={{ minHeight: 150, maxHeight: 500, width: '100%', overflow: 'auto'}}>
-                    {this.renderMessages(this.state.messages)}
-                    <Divider/>
-                </Typography>
+                <AutoScroll>
+                    <Typography component="div" style={{ minHeight: 150, maxHeight: 500, width: '100%'}}>
+                        {this.renderMessages(this.state.messages)}
+                        <Divider/>
+                    </Typography>
+                </AutoScroll>
                 <Grid container style={{padding: '20px'}}>
                         <Grid item xs={11}>
                             <TextField id="outlined-basic-email" label="Write a Message" fullWidth autoFocus value={this.state.buttonText} onChange={ e => this.setState({buttonText: e.target.value})} onKeyPress={this._handleInputKeyPress}/>
