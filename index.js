@@ -1,7 +1,7 @@
 const express = require('express');
 
 const app = express();
-const config = require('./config/keys');
+const config = require('./config/instances');
 const mongoose = require('mongoose');
 mongoose.connect(config.mongoURI, { useNewUrlParse: true });
 
