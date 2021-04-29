@@ -10,6 +10,18 @@ const PORT = process.env.PORT || 5000; // Definimos el puerto para Heroku y loca
 app.use(express.json()); // Middleware para el parseo de la informacion
 require('./routes/dialogFlowRoutes')(app);
 
+if (process.env.NODE_ENV === 'production') { // Comprobacion para deploy en Heroku
+    // Build de archivos js y para el css
+    app.use(express.static('client/build'));
+
+    // Routing de direcciones
+    const path = require('path');
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+}
+
+
 
 app.listen(PORT);
 
