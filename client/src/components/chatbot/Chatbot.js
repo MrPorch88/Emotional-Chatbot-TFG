@@ -25,6 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ReactPlayer from 'react-player';
 
 import AutoScroll from '@brianmcallister/react-auto-scroll';
+import QuickReplies from './QuickReplies';
 
 const cookies = new Cookies();
 
@@ -32,6 +33,7 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     constructor(props){
         super(props);
         this._handleInputKeyPress = this._handleInputKeyPress.bind(this);
+        this._handleQuickReplyPayload = this._handleQuickReplyPayload.bind(this);
         this.state = {
             messages: [],
             buttonText: '',
@@ -110,6 +112,20 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
     }
 
 
+    _handleQuickReplyPayload(event, payload, text) {
+        event.preventDefault();
+        event.stopPropagation();
+        switch (payload) {
+            case 'help_yes':
+                this.df_event_query('QUESTFILL');
+                break;
+            default:
+                this.df_text_query(text);
+                break;
+        }
+    }
+
+
     renderCards(cards) {
         return cards.map((card, i) => <CardTemp key={i} payload={card.structValue}/>);
     }
@@ -128,15 +144,15 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
                                                 <ListItemText align="left" secondary={message.speaks}></ListItemText>
                                             </Grid>
                                             <Grid item xs={12}>
-                                            <ListItemText align="center">
-                                                {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
-                                            </ListItemText>
-                                                
-                                                {/* <div style={{ overflow: 'auto', overflowY: 'scroll'}}>
-                                                    <div style={{ height: 300, width:message.msg.payload.fields.cards.listValue.values.length * 270}}>
-                                                        {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
-                                                    </div>
-                                                </div> */}
+                                                <ListItemText align="center">
+                                                    {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                                                </ListItemText>
+                                                    
+                                                    {/* <div style={{ overflow: 'auto', overflowY: 'scroll'}}>
+                                                        <div style={{ height: 300, width:message.msg.payload.fields.cards.listValue.values.length * 270}}>
+                                                            {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                                                        </div>
+                                                    </div> */}
                                             </Grid>
                                         </Grid>
                                 </ListItem>
@@ -144,6 +160,17 @@ class Chatbot extends Component { // Usamos una clase para poder tener estados y
                         </Grid>
                 </Grid>
             </div>
+        } else if (message.msg && // Comprobamos si se trata de una quick reply
+            message.msg.payload &&
+            message.msg.payload.fields &&
+            message.msg.payload.fields.quick_replies
+        ) {
+            return <QuickReplies
+                text={message.msg.payload.fields.text ? message.msg.payload.fields.text : null}
+                key={i}
+                replyClick={this._handleQuickReplyPayload}
+                speaks={message.speaks}
+                payload={message.msg.payload.fields.quick_replies.listValue.values}/>;
         }
     }
 

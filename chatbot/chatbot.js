@@ -2,7 +2,7 @@
 const dialogFlow = require('@google-cloud/dialogflow');
 const config = require('../config/instances');
 const {struct} = require('pb-util');
-
+const mongoose = require('mongoose');
 const projectID = config.googleProjectID;
 const sessionID = config.dialogFlowSessionID;
 const languageCode = config.dialogFlowSessionLanguageCode;
@@ -13,6 +13,7 @@ const credentials = {
 
 const sessionClient = new dialogFlow.SessionsClient({projectID, credentials});
 //const sessionPath = sessionClient.projectAgentSessionPath(projectID, sessionID);
+const Registration = mongoose.model('registration');
 
 module.exports = {
     textQuery: async function(text, userID, parameters = {}) {
@@ -81,7 +82,30 @@ module.exports = {
     },
 
     handleAction: function(responses){
+        let self = module.exports;
+        let queryResult = responses[0].queryResult;
+
+        switch (queryResult.action) {
+            case 'highNegativeEmotion-yes':
+                if (queryResult.allRequiredParamsPresent) {
+                    self.saveRegistration(queryResult.parameters.fields);
+                }
+                break;
+        } 
         return responses;
     },
-
+    saveRegistration: async function(fields){
+        const registration = new Registration({
+            name: fields.name.structValue.fields.name.stringValue,
+            country: fields.country.stringValue,
+            email: fields.email.stringValue,
+            description: fields.description.stringValue
+        });
+        try{
+            let reg = await registration.save();
+            console.log(reg);
+        } catch (err){
+            console.log(err);
+        }
+    }
 }
